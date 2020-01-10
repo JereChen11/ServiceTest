@@ -22,5 +22,12 @@
         android:text="@string/test_bound_service_function"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/test_messenger_service_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:text="@string/test_messenger_service_function"
+        android:textAllCaps="false" />
 
 </LinearLayout>
