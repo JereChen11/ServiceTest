@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".messenger.MessengerServiceTestActivity"></activity>
+        <activity android:name=".messenger.MessengerServiceTestActivity"/>
         <activity android:name=".startservice.StartServiceTestActivity"></activity>
         <activity android:name=".boundservice.BoundServiceTestActivity" />
 
@@ -24,7 +24,8 @@
         <service
             android:name=".messenger.MessengerService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:process=":newprocess"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

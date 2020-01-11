@@ -2,6 +2,7 @@ package com.example.servicetest.messenger;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -15,8 +16,8 @@ import android.util.Log;
  */
 public class MessengerService extends Service {
     private static final String TAG = "MessengerService";
-    public static final int MSG_FROM_CLIENT = 1;
-
+    public static final int MSG_FROM_SERVICE = 2;
+    public static final String SERVICE_REPLY_MSG_KEY = "SERVICE_REPLY_MSG";
     private Messenger mMessenger = new Messenger(new MyHandler());
 
     @Override
@@ -29,31 +30,28 @@ public class MessengerService extends Service {
         @Override
         public void handleMessage(@NonNull Message msgFromClient) {
             super.handleMessage(msgFromClient);
-//            Message msgToClient = Message.obtain(msgFromClient);
-            Log.e(TAG, "handleMessage msg.what: " + msgFromClient.what);
-            Log.e(TAG, "handleMessage msg.arg1: " + msgFromClient.arg1);
-            Log.e(TAG, "handleMessage msg.arg2: " + msgFromClient.arg2);
-//            switch (msgFromClient.what) {
-//                case MSG_FROM_CLIENT:
-//                    msgToClient.what = MSG_FROM_CLIENT;
-//                    String testString = "jereTest";
-//                    testString.equals("jereTest");
-//                    try {
-//                        //模拟耗时
-//                        Thread.sleep(2000);
-//                        msgToClient.arg2 = msgFromClient.arg1 + msgFromClient.arg2;
-//                        msgFromClient.replyTo.send(msgToClient);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    } catch (RemoteException e) {
-//                        e.printStackTrace();
-//                    }
-//                    break;
-//                default:
-//                    break;
-//            }
-
-
+            Bundle sendByClientBundle = msgFromClient.getData();
+            String clientMsg = sendByClientBundle.getString(MessengerServiceTestActivity.CLIENT_SEND_MSG_KEY);
+            Log.e(TAG, "client send message: " + clientMsg);
+            switch (msgFromClient.what) {
+                case MessengerServiceTestActivity.MSG_FROM_CLIENT:
+                    try {
+                        //模拟耗时4秒，服务端回应信息给客户端
+                        Thread.sleep(4000);
+                        Message replyClientMsg = new Message();
+                        replyClientMsg.what = MSG_FROM_SERVICE;
+                        Bundle bundle = new Bundle();
+                        bundle.putString(SERVICE_REPLY_MSG_KEY, "My Name is Jere");
+                        replyClientMsg.setData(bundle);
+                        //回应消息给客户端
+                        msgFromClient.replyTo.send(replyClientMsg);
+                    } catch (InterruptedException | RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
